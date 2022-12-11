@@ -1,3 +1,3 @@
-# CSCI 1470 Deep Learning Final Project
+# Dual Co-Matching Network for multiple choice questions
 
-- just a placeholder right now, more to come soon!
+## Team name

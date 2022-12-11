@@ -32,7 +32,7 @@ class MatchNet(Model):
         outputs = relu(tf.matmul(attention_weights, q))
         
         return outputs
-        
+   
 
 class GateLayers(Model):
     """ A gate for fusing two inputs of the same size. Similar to a minimal gated unit: 
