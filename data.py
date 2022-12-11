@@ -5,14 +5,14 @@ class Example(object):
 
     def __init__(self,
                  id,
-                 context_sentence,
-                 start_ending,
-                 endings,
+                 passage,
+                 question,
+                 options,
                  answers):
-        self.swag_id = id
-        self.context_sentence = context_sentence
-        self.start_ending = start_ending
-        self.endings = endings
+        self.id = id
+        self.passage = passage
+        self.question = question
+        self.options = options
         self.answers = answers
 
 
@@ -139,4 +139,3 @@ tokenizer = ''
 train_high, train_middle = read_examples(os.path.join(data_path, 'train'))
 dev_high, dev_middle = read_examples(os.path.join(data_path, 'dev'))
 test_high, test_middle = read_examples(os.path.join(data_path, 'test'))
-# train_high_f = convert_examples_to_features(train_high, tokenizer, 512)
