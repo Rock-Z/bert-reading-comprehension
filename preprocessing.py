@@ -21,6 +21,14 @@ def load_bert(preprocess_url, bert_url):
     return bert_preprocess, bert_layer
 
 def concat_bert_inputs(inputs):
+    """Convert a list of dictionaries into one single dictionary of BERT input tensors
+
+    Args:
+        inputs (List<Dictionary>): A list of bert input dictionaries to concatenate.
+
+    Returns:
+        Dictionary: A dictionary, in which each field contains one single tensor from the concatenation of input list
+    """
     ids, masks, type_ids = [], [], []
     for i in inputs:
         ids.append(i['input_word_ids'])

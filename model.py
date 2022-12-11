@@ -66,6 +66,13 @@ class GateLayers(Model):
 
 
 class DCMN(Model):
+    """Dual Co-Matching Network Implementation. Calculates two-sided attention of all
+    qassage/question/answer embeddings and uses it to predict the correct choice.
+
+    Usage:
+        DCMN((p, q, o))) -> tf.tensor([b_size, n_choices]), where `p`, `q` and `o` each is a tensor of strings
+        from the dataset. Returns a softmax vector of length n_choices for the prediction.
+    """
     def __init__(self, config, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
@@ -90,16 +97,11 @@ class DCMN(Model):
         q_tokens = self.bert_preprocess(question)
         o_tokens = self.bert_preprocess(options)
         #tf.map_fn(lambda option: self.bert_preprocess(option), options)
-        #[self.bert_preprocess(option) for option in options]
         
-        #p_embedding = tf.stack([self.bert(p_tokens)['sequence_output']] * self.n_choices, axis=1)
         p_embedding = self.bert(p_tokens)['sequence_output']
-        #q_embedding = tf.stack([self.bert(q_tokens)['sequence_output']] * self.n_choices, axis =1)
         q_embedding = self.bert(q_tokens)['sequence_output']
         o_embedding = self.bert(o_tokens)['sequence_output']
-        #o_embedding = tf.reshape(self.bert(o_tokens)['sequence_output'], (batch_size, self.n_choices, -1, self.hidden_size))
         #tf.map_fn(lambda option: self.bert(option), o_tokens)
-        #tf.convert_to_tensor([self.bert(option)['sequence_output'] for option in o_tokens])
         
         po = tf.math.reduce_max(self.match_layer((p_embedding, o_embedding)), axis = -2)
         op = tf.math.reduce_max(self.match_layer((o_embedding, p_embedding)), axis = -2)
@@ -113,7 +115,6 @@ class DCMN(Model):
         qo_fused = self.gate_layer((qo, oq))
         
         all_attention_values = tf.concat((po_fused, pq_fused, qo_fused), axis=-1)
-        #answer_logits = tf.reshape(self.classifier(all_attention_values), shape=(-1, self.n_choices))
         answer_logits = self.classifier(all_attention_values)
         
         return answer_logits
